@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Professional Portfolio</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Google Fonts: Montserrat (Headings) and Josefin Sans (Accents) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Josefin+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Define custom fonts and colors for Tailwind */
+        :root {
+            /* Scrollbar styling for better aesthetics */
+            scrollbar-width: thin;
+            scrollbar-color: #3B82F6 #1F2937;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1F2937;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #3B82F6;
+            border-radius: 20px;
+            border: 2px solid #1F2937;
+        }
+
+        /* Custom utility for button styling */
+        .btn-primary {
+            @apply inline-block px-4 py-2 bg-accent-blue text-white font-accent font-semibold rounded-lg shadow-md hover:bg-accent-hover transform transition duration-300 ease-in-out;
+        }
+
+        .btn-secondary {
+            @apply inline-block px-4 py-2 bg-card-dark text-accent-blue font-accent font-semibold rounded-lg shadow-md border-2 border-accent-blue hover:bg-accent-blue hover:text-white transform transition duration-300 ease-in-out;
+        }
+        
+        /* Utility class for cards that should fade in (applied via JS observer) */
+        .fade-in-card {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in-card.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'heading': ['Montserrat', 'sans-serif'], /* For titles and primary headings */
+                        'accent': ['Josefin Sans', 'sans-serif'], /* For subheadings or feature text */
+                        'sans': ['Inter', 'sans-serif'], /* Default body font (excellent readability) */
+                    },
+                    colors: {
+                        'background-dark': '#111827', /* Gray-900 */
+                        'card-dark': '#1F2937', /* Gray-800 */
+                        'text-light': '#F3F4F6', /* Gray-100 */
+                        'accent-blue': '#3B82F6', /* Blue-500 */
+                        'accent-hover': '#2563EB', /* Blue-600 */
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        zoomIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        // Enhanced keyframe for a pulsing border glow on hover
+                        'pulse-border': {
+                            '0%, 100%': { boxShadow: '0 0 0 rgba(59, 130, 246, 0.0)' },
+                            '50%': { boxShadow: '0 0 15px rgba(59, 130, 246, 0.8)' },
+                        }
+                    },
+                    animation: {
+                        fadeInUp: 'fadeInUp 0.6s ease-out forwards',
+                        zoomIn: 'zoomIn 0.8s ease-out forwards',
+                        'pulse-border-slow': 'pulse-border 2s ease-in-out infinite',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background-dark text-text-light font-sans antialiased">
+
+    <!-- Navbar -->
+    <header id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-background-dark/95 backdrop-blur-sm shadow-xl transition-all duration-300">
+        <nav class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+            <a href="#home" class="text-2xl font-heading font-black text-accent-blue hover:text-accent-hover transition duration-300">
+                SUTIRTHA LAHA
+            </a>
+            <div id="nav-links" class="hidden sm:flex space-x-4 lg:space-x-6 text-sm">
+                <a href="#about" class="text-text-light hover:text-accent-blue font-accent transition duration-300">About</a>
+                <a href="#academics" class="text-text-light hover:text-accent-blue font-accent transition duration-300">Academics</a>
+                <a href="#coursework" class="text-text-light hover:text-accent-blue font-accent transition duration-300">Coursework</a>
+                <a href="#skills" class="text-text-light hover:text-accent-blue font-accent transition duration-300">Skills</a>
+                <a href="#projects" class="text-text-light hover:text-accent-blue font-accent transition duration-300">Projects</a>
+                <a href="#hobbies" class="text-text-light hover:text-accent-blue font-accent transition duration-300">Hobbies</a>
+                <a href="#contact" class="text-text-light hover:text-accent-blue font-accent transition duration-300">Contact</a>
+            </div>
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="sm:hidden text-text-light focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+         <!-- Mobile Menu Drawer -->
+        <div id="mobile-menu" class="hidden sm:hidden flex flex-col items-center pb-4 space-y-3 bg-background-dark">
+            <a href="#about" class="text-text-light hover:text-accent-blue font-accent transition duration-300 block py-2" onclick="toggleMenu()">About</a>
+            <a href="#academics" class="text-text-light hover:text-accent-blue font-accent transition duration-300 block py-2" onclick="toggleMenu()">Academics</a>
+            <a href="#coursework" class="text-text-light hover:text-accent-blue font-accent transition duration-300 block py-2" onclick="toggleMenu()">Coursework</a>
+            <a href="#skills" class="text-text-light hover:text-accent-blue font-accent transition duration-300 block py-2" onclick="toggleMenu()">Skills</a>
+            <a href="#projects" class="text-text-light hover:text-accent-blue font-accent transition duration-300 block py-2" onclick="toggleMenu()">Projects</a>
+            <a href="#hobbies" class="text-text-light hover:text-accent-blue font-accent transition duration-300 block py-2" onclick="toggleMenu()">Hobbies</a>
+            <a href="#contact" class="text-text-light hover:text-accent-blue font-accent transition duration-300 block py-2" onclick="toggleMenu()">Contact</a>
+        </div>
+    </header>
+
+    <main class="pt-16">
+        <!-- Hero Section -->
+        <section id="home" class="flex items-center justify-center min-h-screen pt-24 pb-16 px-4 md:px-8 text-center bg-card-dark/20">
+            <div class="max-w-4xl space-y-6">
+                <p class="text-xl md:text-2xl text-accent-blue font-accent animate-fadeInUp">Hello, I'm</p>
+                <h1 class="text-5xl sm:text-7xl lg:text-8xl font-heading font-extrabold leading-tight text-text-light animate-zoomIn">
+                    SUTIRTHA LAHA
+                </h1>
+                <h2 class="text-2xl sm:text-4xl text-text-light/80 font-accent animate-fadeInUp delay-200" style="animation-delay: 0.2s;">
+                    A Passionate <span class="text-accent-blue font-bold">Developer & Designer</span>
+                </h2>
+                <p class="text-lg text-text-light/70 max-w-2xl mx-auto animate-fadeInUp delay-400" style="animation-delay: 0.4s;">
+                    Crafting elegant, efficient, and modern digital experiences one line of code at a time.
+                </p>
+                <a href="#projects" class="inline-block mt-8 px-8 py-3 bg-accent-blue text-white font-heading font-bold rounded-xl shadow-lg hover:bg-accent-hover transform hover:scale-[1.02] transition duration-300 ease-in-out animate-fadeInUp delay-600" style="animation-delay: 0.6s;">
+                    View My Work
+                </a>
+            </div>
+        </section>
+
+        <!-- About Me Section -->
+        <section id="about" class="py-16 md:py-24 px-4 md:px-8 border-b border-card-dark">
+            <div class="container mx-auto max-w-6xl">
+                <h2 class="text-4xl sm:text-5xl font-heading font-bold text-center mb-12 text-accent-blue">
+                    About Me
+                </h2>
+                <div class="bg-card-dark p-8 md:p-12 rounded-2xl shadow-2xl transition duration-500 hover:shadow-accent-blue/20 fade-in-card">
+                    <p class="text-lg md:text-xl leading-relaxed text-text-light/90">
+                        I am a professional developer specializing in the MERN stack, Java , Python. My focus is on delivering high-performance, accessible, and user-centric applications. I thrive in collaborative environments and am passionate about learning new technologies and solving complex challenges.
+                    </p>
+                    <p class="text-lg md:text-xl leading-relaxed text-text-light/90 mt-6">
+                        Beyond the code, I believe good design is crucial. I aim to bridge the gap between aesthetics and functionality, ensuring every project is visually stunning and technically sound. Let's build something amazing together!
+                    </p>
+                    <a href="#contact" class="inline-block mt-8 text-accent-blue font-accent font-bold hover:text-accent-hover transition duration-300 border-b-2 border-accent-blue/50 hover:border-accent-hover">
+                        Connect with me &rarr;
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Academics Section -->
+        <section id="academics" class="py-16 md:py-24 px-4 md:px-8 border-b border-card-dark bg-card-dark/20">
+            <div class="container mx-auto max-w-6xl">
+                <h2 class="text-4xl sm:text-5xl font-heading font-bold text-center mb-12 text-accent-blue">
+                    Academics & Education
+                </h2>
+                <div class="space-y-8">
+                    <!-- Academic Entry 1 -->
+                    <div class="bg-card-dark p-6 md:p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-accent-blue/30 flex flex-col md:flex-row justify-between items-start fade-in-card" style="transition-delay: 0.1s;">
+                        <div>
+                            <h3 class="text-2xl font-heading font-bold text-text-light">B.Tech Computer Science Engineering(Cybersecurity)</h3>
+                            <p class="text-lg font-accent text-accent-blue mt-1">Techno Main Salt Lake</p>
+                            <p class="text-text-light/70 mt-2">
+                                <span class="font-semibold">Relevant Focus:</span> Data Structures & Algorithms, Software Engineering, DBMS, Operating system, Computer Networks, Cybersecurity Basics.
+                            </p>
+                        </div>
+                        <div class="mt-4 md:mt-0 md:text-right">
+                            <p class="font-accent font-bold text-text-light">2022–2026</p>
+                            <p class="text-sm text-text-light/60">GPA: 7.9 / 10</p>
+                        </div>
+                    </div>
+                    <!-- Academic Entry 2 -->
+                    <div class="bg-card-dark p-6 md:p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-accent-blue/30 flex flex-col md:flex-row justify-between items-start fade-in-card" style="transition-delay: 0.2s;">
+                        <div>
+                            <h3 class="text-2xl font-heading font-bold text-text-light">Hands-On React. Build advanced React JS Frontend with expert</h3>
+                            <p class="text-lg font-accent text-accent-blue mt-1">Udemy</p>
+                            <p class="text-text-light/70 mt-2">
+                                <span class="font-semibold">Focus:</span> Frontend Development
+                            </p>
+                        </div>
+                        <div class="mt-4 md:mt-0 md:text-right">
+                            <p class="font-accent font-bold text-text-light">2024</p>
+                            <p class="text-sm text-text-light/60"></p>
+                        </div>
+                    </div>
+                    <div class="bg-card-dark p-6 md:p-8 rounded-2xl shadow-xl transition duration-300 hover:shadow-accent-blue/30 flex flex-col md:flex-row justify-between items-start fade-in-card" style="transition-delay: 0.2s;">
+                        <div>
+                            <h3 class="text-2xl font-heading font-bold text-text-light">Dart and Flutter: The Ultimate Mobile App Development Course</h3>
+                            <p class="text-lg font-accent text-accent-blue mt-1">Udemy</p>
+                            <p class="text-text-light/70 mt-2">
+                                <span class="font-semibold">Focus:</span> Mobile App Development
+                            </p>
+                        </div>
+                        <div class="mt-4 md:mt-0 md:text-right">
+                            <p class="font-accent font-bold text-text-light">2024</p>
+                            <p class="text-sm text-text-light/60"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Coursework Section -->
+        <section id="coursework" class="py-16 md:py-24 px-4 md:px-8 border-b border-card-dark">
+            <div class="container mx-auto max-w-6xl">
+                <h2 class="text-4xl sm:text-5xl font-heading font-bold text-center mb-12 text-accent-blue">
+                    Relevant Coursework
+                </h2>
+                <p class="text-center text-lg text-text-light/70 mb-8 max-w-3xl mx-auto fade-in-card" style="transition-delay: 0.1s;">
+                    Key subjects and dedicated online courses that built foundational and specialized knowledge crucial to my development career.
+                </p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <!-- Course Badge Template with staggering -->
+                    <div class="bg-accent-blue/20 text-accent-blue p-4 rounded-xl text-center shadow-lg transition duration-300 transform hover:scale-[1.03] hover:bg-accent-blue/30 cursor-default font-accent font-semibold fade-in-card" style="transition-delay: 0.2s;">
+                        Full Stack Development
+                    </div>
+                    <div class="bg-accent-blue/20 text-accent-blue p-4 rounded-xl text-center shadow-lg transition duration-300 transform hover:scale-[1.03] hover:bg-accent-blue/30 cursor-default font-accent font-semibold fade-in-card" style="transition-delay: 0.3s;">
+                        Database Management System
+                    </div>
+                    <div class="bg-accent-blue/20 text-accent-blue p-4 rounded-xl text-center shadow-lg transition duration-300 transform hover:scale-[1.03] hover:bg-accent-blue/30 cursor-default font-accent font-semibold fade-in-card" style="transition-delay: 0.4s;">
+                        Operating System
+                    </div>
+                    <div class="bg-accent-blue/20 text-accent-blue p-4 rounded-xl text-center shadow-lg transition duration-300 transform hover:scale-[1.03] hover:bg-accent-blue/30 cursor-default font-accent font-semibold fade-in-card" style="transition-delay: 0.5s;">
+                        Data Structure & Algorithms
+                    </div>
+                    <div class="bg-accent-blue/20 text-accent-blue p-4 rounded-xl text-center shadow-lg transition duration-300 transform hover:scale-[1.03] hover:bg-accent-blue/30 cursor-default font-accent font-semibold fade-in-card" style="transition-delay: 0.6s;">
+                        Object-Oriented Programming
+                    </div>
+                    <div class="bg-accent-blue/20 text-accent-blue p-4 rounded-xl text-center shadow-lg transition duration-300 transform hover:scale-[1.03] hover:bg-accent-blue/30 cursor-default font-accent font-semibold fade-in-card" style="transition-delay: 0.7s;">
+                        Cybersecurity Fundamentals
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="py-16 md:py-24 px-4 md:px-8 border-b border-card-dark bg-card-dark/20">
+            <div class="container mx-auto max-w-6xl">
+                <h2 class="text-4xl sm:text-5xl font-heading font-bold text-center mb-12 text-accent-blue">
+                    Technical Stack
+                </h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+                    <!-- Skill Cards with Staggering and Enhanced Hover -->
+                    <div class="skill-card bg-card-dark p-6 rounded-xl text-center shadow-lg transition duration-300 transform hover:scale-105 cursor-default border-2 border-card-dark hover:border-accent-blue hover:animate-pulse-border-slow fade-in-card" style="transition-delay: 0.1s;">
+                        <span class="text-4xl mb-2 block" role="img" aria-label="React Icon"><img src="react-svgrepo-com.svg" style="margin-left: 70px; margin-top: 15px; height: 40px ; width: 40px; ;"></span>
+                        <p class="font-accent font-semibold text-lg">React</p>
+                    </div>
+                    <div class="skill-card bg-card-dark p-6 rounded-xl text-center shadow-lg transition duration-300 transform hover:scale-105 cursor-default border-2 border-card-dark hover:border-accent-blue hover:animate-pulse-border-slow fade-in-card" style="transition-delay: 0.2s;">
+                        <span class="text-4xl mb-2 block" role="img" aria-label="Node.js Icon"><img src="node-js-svgrepo-com.svg" style="margin-left: 70px; margin-top: 15px; height: 40px ; width: 40px; ;"></span>
+                        <p class="font-accent font-semibold text-lg">Node.js</p>
+                    </div>
+                    <div class="skill-card bg-card-dark p-6 rounded-xl text-center shadow-lg transition duration-300 transform hover:scale-105 cursor-default border-2 border-card-dark hover:border-accent-blue hover:animate-pulse-border-slow fade-in-card" style="transition-delay: 0.3s;">
+                        <span class="text-4xl mb-2 block" role="img" aria-label="JavaScript Icon"><img src="javascript-svgrepo-com.svg" style="margin-left: 70px; margin-top: 15px; height: 40px ; width: 40px; ;"></span>
+                        <p class="font-accent font-semibold text-lg">JavaScript</p>
+                    </div>
+                    <div class="skill-card bg-card-dark p-6 rounded-xl text-center shadow-lg transition duration-300 transform hover:scale-105 cursor-default border-2 border-card-dark hover:border-accent-blue hover:animate-pulse-border-slow fade-in-card" style="transition-delay: 0.4s;">
+                        <span class="text-4xl mb-2 block" role="img" aria-label="Tailwind CSS Icon"><img src="tailwind-svgrepo-com.svg" style="margin-left: 70px; margin-top: 15px; height: 40px ; width: 40px; ;"></span>
+                        <p class="font-accent font-semibold text-lg">Tailwind CSS</p>
+                    </div>
+                    <div class="skill-card bg-card-dark p-6 rounded-xl text-center shadow-lg transition duration-300 transform hover:scale-105 cursor-default border-2 border-card-dark hover:border-accent-blue hover:animate-pulse-border-slow fade-in-card" style="transition-delay: 0.5s;">
+                        <span class="text-4xl mb-2 block" role="img" aria-label="SQL Icon"><img src="pgsql-svgrepo-com.svg" style="margin-left: 70px; margin-top: 15px; height: 40px ; width: 40px; ;"></span>
+                        <p class="font-accent font-semibold text-lg">PostgreSQL</p>
+                    </div>
+                     <div class="skill-card bg-card-dark p-6 rounded-xl text-center shadow-lg transition duration-300 transform hover:scale-105 cursor-default border-2 border-card-dark hover:border-accent-blue hover:animate-pulse-border-slow fade-in-card" style="transition-delay: 0.6s;">
+                        <span class="text-4xl mb-2 block" role="img" aria-label="TypeScript Icon"><img src="java-svgrepo-com.svg" style="margin-left: 70px; margin-top: 15px; height: 40px ; width: 40px; ;"></span>
+                        <p class="font-accent font-semibold text-lg">Java</p>
+                    </div>
+                     <div class="skill-card bg-card-dark p-6 rounded-xl text-center shadow-lg transition duration-300 transform hover:scale-105 cursor-default border-2 border-card-dark hover:border-accent-blue hover:animate-pulse-border-slow fade-in-card" style="transition-delay: 0.7s;">
+                        <span class="text-4xl mb-2 block" role="img" aria-label="Git Icon"><img src="github-color-svgrepo-com.svg" style="margin-left: 70px; margin-top: 15px; height: 40px ; width: 40px; ;"></span>
+                        <p class="font-accent font-semibold text-lg">Git/GitHub</p>
+                    </div>
+                     <div class="skill-card bg-card-dark p-6 rounded-xl text-center shadow-lg transition duration-300 transform hover:scale-105 cursor-default border-2 border-card-dark hover:border-accent-blue hover:animate-pulse-border-slow fade-in-card" style="transition-delay: 0.8s;">
+                        <span class="text-4xl mb-2 block" role="img" aria-label="Python Icon"><img src="python-svgrepo-com.svg" style="margin-left: 70px; margin-top: 15px; height: 40px ; width: 40px; ;"></span>
+                        <p class="font-accent font-semibold text-lg">Python</p>
+                    </div>
+                    <div class="skill-card bg-card-dark p-6 rounded-xl text-center shadow-lg transition duration-300 transform hover:scale-105 cursor-default border-2 border-card-dark hover:border-accent-blue hover:animate-pulse-border-slow fade-in-card" style="transition-delay: 0.9s;">
+                        <span class="text-4xl mb-2 block" role="img" aria-label="Testing Icon"><img src="flutter-svgrepo-com.svg" style="margin-left: 70px; margin-top: 15px; height: 40px ; width: 40px; ;"></span>
+                        <p class="font-accent font-semibold text-lg">Flutter</p>
+                    </div>
+                    <div class="skill-card bg-card-dark p-6 rounded-xl text-center shadow-lg transition duration-300 transform hover:scale-105 cursor-default border-2 border-card-dark hover:border-accent-blue hover:animate-pulse-border-slow fade-in-card" style="transition-delay: 1.0s;">
+                        <span class="text-4xl mb-2 block" role="img" aria-label="UI/UX Icon"><img src="adobe-xd-svgrepo-com.svg" style="margin-left: 70px; margin-top: 15px; height: 40px ; width: 40px; ;"></span>
+                        <p class="font-accent font-semibold text-lg">Adobe XD-UI</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="py-16 md:py-24 px-4 md:px-8 border-b border-card-dark">
+            <div class="container mx-auto max-w-6xl">
+                <h2 class="text-4xl sm:text-5xl font-heading font-bold text-center mb-12 text-accent-blue">
+                    Featured Projects
+                </h2>
+                <div class="space-y-12">
+                    <!-- Project 1 -->
+                    <div class="project-card bg-card-dark p-6 md:p-10 rounded-2xl shadow-xl hover:shadow-accent-blue/40 transition duration-500 transform hover:translate-y-[-5px] fade-in-card" style="transition-delay: 0.1s;">
+                        <h3 class="text-3xl font-heading font-bold mb-3 text-text-light">Government Workflow Automation and Accountability using Cryptographic hashing</h3>
+                        <p class="text-accent-blue font-accent mb-4">FastAPI, PostgreSQL, Python , HTML, CSS, OAuth2</p>
+                        <p class="text-text-light/80 mb-6">
+                            Full-stack Government Workflow Engine secured by Role-Based Access Control (RBAC), featuring an immutable audit trail and ML-driven task prioritization using a decoupled FastAPI/PostgreSQL/React architecture.
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#" class="btn-primary">Live Demo &rarr;</a>
+                            <a href="#" class="btn-secondary">GitHub Repo</a>
+                        </div>
+                    </div>
+
+                     <!-- Project 2 -->
+                    <!-- <div class="project-card bg-card-dark p-6 md:p-10 rounded-2xl shadow-xl hover:shadow-accent-blue/40 transition duration-500 transform hover:translate-y-[-5px] fade-in-card" style="transition-delay: 0.3s;">
+                        <h3 class="text-3xl font-heading font-bold mb-3 text-text-light">Real-time Data Visualization Tool</h3>
+                        <p class="text-accent-blue font-accent mb-4">D3.js, WebSockets, Python Flask</p>
+                        <p class="text-text-light/80 mb-6">
+                            Developed a dashboard for real-time sensor data. Utilized WebSockets for instant data updates and D3.js for rendering complex, interactive visualizations (e.g., scatter plots, heat maps). Improved data monitoring efficiency by 50%.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#" class="btn-primary">Live Demo &rarr;</a>
+                            <a href="#" class="btn-secondary">GitHub Repo</a>
+                        </div>
+                    </div> -->
+
+                    <!-- Project 3 -->
+                    <!--<div class="project-card bg-card-dark p-6 md:p-10 rounded-2xl shadow-xl hover:shadow-accent-blue/40 transition duration-500 transform hover:translate-y-[-5px] fade-in-card" style="transition-delay: 0.5s;">
+                        <h3 class="text-3xl font-heading font-bold mb-3 text-text-light">Mobile-First Recipe App</h3>
+                        <p class="text-accent-blue font-accent mb-4">Angular, Tailwind CSS, Firebase</p>
+                        <p class="text-text-light/80 mb-6">
+                            A highly performant recipe application focused on mobile usability. Features include offline support, advanced search filters, and user authentication with Firebase. Designed with a clean, component-based Angular structure.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#" class="btn-primary">Live Demo &rarr;</a>
+                            <a href="#" class="btn-secondary">GitHub Repo</a>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Hobbies Section (UPDATED) -->
+        <section id="hobbies" class="py-16 md:py-24 px-4 md:px-8 border-b border-card-dark bg-card-dark/20">
+            <div class="container mx-auto max-w-6xl">
+                <h2 class="text-4xl sm:text-5xl font-heading font-bold text-center mb-12 text-accent-blue">
+                    Hobbies & Interests
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <!-- Hobby 1: Hiking -->
+                    <div class="hobby-card bg-card-dark p-8 rounded-2xl shadow-xl transition duration-500 transform hover:bg-accent-blue/10 fade-in-card" style="transition-delay: 0.1s;">
+                        <span class="text-6xl mb-4 block" role="img" aria-label="Mountain Icon"><img src="graphic-tablet-svgrepo-com.svg" style="margin-left: 140px; margin-top: 15px; height: 60px ; width: 60px; ;"></span>
+                        <h3 class="text-xl font-accent font-bold mb-2 text-text-light">Graphic Designing</h3>
+                        <p class="text-text-light/70">
+                            Photoshop Illustrator and XD been my besties since 2020.
+                        </p>
+                    </div>
+                    <!-- Hobby 2: Tabla -->
+                    <div class="hobby-card bg-card-dark p-8 rounded-2xl shadow-xl transition duration-500 transform hover:bg-accent-blue/10 fade-in-card" style="transition-delay: 0.2s;">
+                        <span class="text-6xl mb-4 block" role="img" aria-label="Drum Icon"><img src="percussion-instruments-drum-svgrepo-com.svg" style="margin-left: 140px; margin-top: 15px; height: 60px ; width: 60px; ;"></span>
+                        <h3 class="text-xl font-accent font-bold mb-2 text-text-light">Playing the Tabla</h3>
+                        <p class="text-text-light/70">
+                            The rhythms of the Tabla train discipline, focus, and pattern recognition, directly benefiting my coding ability.
+                        </p>
+                    </div>
+                    <!-- Hobby 3: Photography -->
+                    <div class="hobby-card bg-card-dark p-8 rounded-2xl shadow-xl transition duration-500 transform hover:bg-accent-blue/10 fade-in-card" style="transition-delay: 0.3s;">
+                        <span class="text-6xl mb-4 block" role="img" aria-label="Photography Icon">📸</span>
+                        <h3 class="text-xl font-accent font-bold mb-2 text-text-light">Photography</h3>
+                        <p class="text-text-light/70">
+                            Focusing on composition and light in photography has honed my eye for detail and design in UI/UX work.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Me Section -->
+        <section id="contact" class="py-16 md:py-24 px-4 md:px-8">
+            <div class="container mx-auto max-w-6xl">
+                <h2 class="text-4xl sm:text-5xl font-heading font-bold text-center mb-12 text-accent-blue">
+                    Get In Touch
+                </h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <!-- Contact Details -->
+                    <div class="space-y-8 p-6 lg:p-10 bg-card-dark rounded-2xl shadow-2xl fade-in-card" style="transition-delay: 0.1s;">
+                        <h3 class="text-2xl font-accent font-bold mb-4 text-text-light">My Contact Information</h3>
+
+                        <!-- Email -->
+                        <div class="flex items-start space-x-4">
+                            <span class="text-accent-blue text-2xl mt-1">📧</span>
+                            <div>
+                                <p class="text-text-light/60 font-accent">Email Address</p>
+                                <p class="text-xl font-heading font-bold text-text-light hover:text-accent-blue transition duration-300">
+                                    <a href="mailto:l.sutirtha7384@gmail.com">l.sutirtha7384@gmail.com</a>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="flex items-start space-x-4">
+                            <span class="text-accent-blue text-2xl mt-1">📞</span>
+                            <div>
+                                <p class="text-text-light/60 font-accent">Phone Number</p>
+                                <p class="text-xl font-heading font-bold text-text-light hover:text-accent-blue transition duration-300">
+                                    <a href="tel:+919883786166">9883786166</a>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Social Media -->
+                        <div>
+                            <p class="text-text-light/60 font-accent mb-3">Social Connect</p>
+                            <div class="flex space-x-6 text-3xl">
+                                <a href="https://www.linkedin.com/in/sutirtha-laha-932797271/" target="_blank" class="text-accent-blue hover:text-accent-hover transform hover:scale-110 transition duration-300" aria-label="LinkedIn">
+                                    <span role="img"><img src="linkedin-svgrepo-com.svg"  style="width: 40px; height: 40px;" alt=""></span>
+                                </a>
+                                <a href="https://github.com/Sutirthagit" target="_blank" class="text-accent-blue hover:text-accent-hover transform hover:scale-110 transition duration-300" aria-label="GitHub">
+                                    <span role="img"><img src="github-color-svgrepo-com.svg"  style="width: 35px; height: 35x;" alt=""></span>
+                                </a>
+                                <a href="https://www.instagram.com/sutirthalaha/" target="_blank" class="text-accent-blue hover:text-accent-hover transform hover:scale-110 transition duration-300" aria-label="Twitter">
+                                    <span role="img"><img src="instagram-svgrepo-com.svg"  style="width: 40px; height: 40px;" alt=""></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Send Message Form -->
+                    <div class="p-6 lg:p-10 bg-card-dark rounded-2xl shadow-2xl fade-in-card" style="transition-delay: 0.3s;">
+                        <h3 class="text-2xl font-accent font-bold mb-6 text-text-light">Send Me a Message</h3>
+                        <form id="contactForm" class="space-y-4">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-text-light/70 mb-1">Your Name</label>
+                                <input type="text" id="name" name="name" required
+                                    class="w-full p-3 rounded-lg bg-background-dark border border-background-dark focus:border-accent-blue focus:ring focus:ring-accent-blue/50 text-text-light transition duration-300">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-text-light/70 mb-1">Your Email</label>
+                                <input type="email" id="email" name="email" required
+                                    class="w-full p-3 rounded-lg bg-background-dark border border-background-dark focus:border-accent-blue focus:ring focus:ring-accent-blue/50 text-text-light transition duration-300">
+                            </div>
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-text-light/70 mb-1">Your Message</label>
+                                <textarea id="message" name="message" rows="4" required
+                                    class="w-full p-3 rounded-lg bg-background-dark border border-background-dark focus:border-accent-blue focus:ring focus:ring-accent-blue/50 text-text-light transition duration-300"></textarea>
+                            </div>
+                            <button type="submit" id="submitBtn" class="w-full mt-4 px-6 py-3 bg-accent-blue text-white font-heading font-bold rounded-xl shadow-lg hover:bg-accent-hover transform hover:scale-[1.01] transition duration-300 ease-in-out">
+                                Send Message
+                            </button>
+                            <div id="statusMessage" class="hidden mt-4 text-center p-3 rounded-lg text-sm font-accent"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-background-dark border-t border-card-dark py-8 text-center">
+        <p class="text-text-light/70 text-sm font-accent">&copy; <span id="currentYear"></span> [Your Name]. All rights reserved. | Crafted with <span class="text-accent-blue">❤️</span></p>
+    </footer>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Utility to handle mobile menu visibility
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        function toggleMenu() {
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleMenu);
+
+        // Hide mobile menu when a link is clicked
+        function closeMenu() {
+            if (!mobileMenu.classList.contains('hidden')) {
+                toggleMenu();
+            }
+        }
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+
+        // Contact Form Submission (Simulated)
+        const form = document.getElementById('contactForm');
+        const statusMessage = document.getElementById('statusMessage');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Disable button and show loading state
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            submitBtn.classList.remove('bg-accent-blue', 'hover:bg-accent-hover');
+            submitBtn.classList.add('bg-accent-blue/50');
+            statusMessage.classList.add('hidden');
+
+            // Simulate API call delay
+            setTimeout(() => {
+                // Reset button
+                submitBtn.textContent = 'Send Message';
+                submitBtn.disabled = false;
+                submitBtn.classList.add('bg-accent-blue', 'hover:bg-accent-hover');
+                submitBtn.classList.remove('bg-accent-blue/50');
+                
+                // Show success message
+                statusMessage.textContent = 'Thank you! Your message has been sent successfully (Simulated).';
+                statusMessage.classList.remove('hidden');
+                statusMessage.classList.add('bg-green-600/20', 'text-green-400');
+                
+                // Clear the form
+                form.reset();
+
+            }, 2000); // 2 second delay
+        });
+
+        // Basic Scroll Animation (could be expanded for more complex effects)
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-2xl', 'py-2');
+                navbar.classList.remove('py-3');
+            } else {
+                navbar.classList.remove('shadow-2xl', 'py-2');
+                navbar.classList.add('py-3');
+            }
+        });
+
+        // --- Intersection Observer for Fade-In Effect ---
+        // This is necessary to trigger the 'fade-in-card' animation when the element scrolls into view
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1 // Trigger when 10% of the element is visible
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // Stop observing once it's visible to save performance
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Target all elements that should fade in
+        document.querySelectorAll('.fade-in-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
