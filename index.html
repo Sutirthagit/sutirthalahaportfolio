@@ -464,6 +464,32 @@
                             </button>
                             <div id="statusMessage" class="hidden mt-4 text-center p-3 rounded-lg text-sm font-accent"></div>
                         </form>
+                        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+                        <script type="text/javascript">
+                         (function() {
+                            emailjs.init({
+                             publicKey: "zwEqhqUXgnRu_L3Mu" // Replace with your Public Key
+                         });
+                         })();
+                        </script>
+                        <script>
+                              window.onload = function() {
+                     document.getElementById('contactForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        console.log('Form submission attempted!');
+
+        // emailjs.sendForm('SERVICE_ID', 'TEMPLATE_ID', 'FORM_REFERENCE')
+        emailjs.sendForm('service_t2ul19i' , 'template_hc8u1ub' , this)
+            .then(function() {
+                alert('Message sent successfully!');
+                // Optional: reset the form fields
+                document.getElementById('contactForm').reset(); 
+            }, function(error) {
+                console.log('FAILED...', error);
+                alert('Message failed to send. Please try again.');
+            });
+    });
+}
                     </div>
                 </div>
             </div>
@@ -570,4 +596,5 @@
     </script>
 </body>
 </html>
+
 
